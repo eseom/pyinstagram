@@ -1,6 +1,6 @@
 from __future__ import unicode_literals, print_function
 
-from . import signature, constants
+from . import signature, constants, responses
 from .client import Client
 from .device import Device
 from collections import OrderedDict
@@ -96,10 +96,16 @@ class Instagram(object):
         if pre_login:
             o = OrderedDict(id=signature.generate_uuid(True),
                             experiments=constants.LOGIN_EXPERIMENTS)
-            rv = self.client.api('qe/sync/', needs_auth=False, data=o)
-            print(rv)
-            print(rv.headers)
-            print(rv.text)
+            return self.client.api(
+                'qe/sync/', needs_auth=False, data=o,
+                response=responses.SyncResponse)
+
+    def get_signup_challenge(self):
+        return self.client.api(
+            'si/fetch_headers/',
+            params=OrderedDict(challenge_type='signup',
+                               guid=self.uuid.replace('-', '')),
+            response=responses.ChallengeResponse)
 
     def __str__(self):
         return ('<Instagram: settings=%s, device=%s, username=%s, '

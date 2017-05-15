@@ -34,7 +34,7 @@ class Client(object):
     def load_cookie_jar(self, reset_cookie_jar=False):
         pass
 
-    def api(self, url, data, needs_auth=True, signed_post=True):
+    def api(self, url, params={}, data={}, needs_auth=True, signed_post=True, response=None):
         url = constants.get_api_url(1, url)
         headers = {
             'User-Agent': self.user_agent,
@@ -58,4 +58,10 @@ class Client(object):
         if signed_post:
             data = signature.generate_signature_for_post(json.dumps(data))
 
-        return getattr(requests, method)(url, headers=headers, data=data)
+        rv = getattr(requests, method)(url, headers=headers, data=data)
+
+        if rv.status_code != 200:
+            print(rv)
+            raise Exception()
+
+        return rv
