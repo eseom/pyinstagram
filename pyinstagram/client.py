@@ -3,6 +3,7 @@ from __future__ import unicode_literals, print_function
 import httplib
 import json
 import logging
+import os
 import random
 
 import requests
@@ -10,13 +11,14 @@ import requests
 import constants
 import signature
 
-# Debug logging
-httplib.HTTPConnection.debuglevel = 1
-logging.basicConfig()
-logging.getLogger().setLevel(logging.DEBUG)
-req_log = logging.getLogger('requests.packages.urllib3')
-req_log.setLevel(logging.DEBUG)
-req_log.propagate = True
+if os.environ.get('DEBUG'):
+    # Debug logging
+    httplib.HTTPConnection.debuglevel = 1
+    logging.basicConfig()
+    logging.getLogger().setLevel(logging.DEBUG)
+    req_log = logging.getLogger('requests.packages.urllib3')
+    req_log.setLevel(logging.DEBUG)
+    req_log.propagate = True
 
 
 class Client(object):
@@ -49,7 +51,6 @@ class Client(object):
             'Content-Type': constants.CONTENT_TYPE,
             'Accept-Language': constants.ACCEPT_LANGUAGE,
         }
-        print(headers)
 
         method = 'get'
         if data:
@@ -61,7 +62,6 @@ class Client(object):
         rv = getattr(requests, method)(url, headers=headers, data=data)
 
         if rv.status_code != 200:
-            print(rv)
             raise Exception()
 
         return rv

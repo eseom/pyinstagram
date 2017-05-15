@@ -2,9 +2,11 @@
 test signature
 """
 
+from __future__ import unicode_literals, print_function
+
 import unittest
 
-from pyinstagram.signature import generate_signature, generate_uuid, \
+from pyinstagram.signature import generate_signature_for_post, generate_uuid, \
     generate_device_id
 
 
@@ -17,13 +19,13 @@ class Tester(unittest.TestCase):
         test generate_signature function
         """
         src = [['signkey',
-                'ig_sig_key_version=4&signed_body=132c669f6844651f5e53f91d'
-                'ca7e9ee9cf15d07bdd41f6b289e094e9732d0886.signkey'],
+                'ig_sig_key_version=4&signed_body=ac6790a5debc0ebac12d89ce3'
+                'cff00b581e1189deacdf99239821e17f500b1ec.signkey'],
                ['customkey',
-                'ig_sig_key_version=4&signed_body=9a79c387ed6a890b3ce82304'
-                '93aa64f018c9b633c1e7ebf7bf7c202ab3f41a31.customkey']]
+                'ig_sig_key_version=4&signed_body=3dc83e3b2e14375a8cb91e9e0'
+                'b5b4373180cef893edf94a74379184d20bfcdf0.customkey']]
         for (sign_key, generated_sign_key) in src:
-            self.assertEqual(generate_signature(sign_key), generated_sign_key)
+            self.assertEqual(generate_signature_for_post(sign_key), generated_sign_key)
 
     def test_generate_uuid(self):
         """
@@ -41,8 +43,6 @@ class Tester(unittest.TestCase):
         """
         test generate_device_id function
         """
-        src = [['seed1', 'android-9437f3195fc63d10'],
-               ['seed2', 'android-96476ba6b1ec5ea3'],
-               ['seed3', 'android-48320237e596bc81']]
-        for (seed, device_id) in src:
-            self.assertEqual(generate_device_id(seed), device_id)
+        device_id = generate_device_id()
+        self.assertEqual(device_id[0:8], 'android-')
+        self.assertEqual(len(device_id), 24)

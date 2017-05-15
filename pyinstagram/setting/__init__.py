@@ -35,7 +35,11 @@ class Setting(object):
 
         if type == 'file':
             cls.__instance = Setting()
-            cls.__instance.set_handler(File(), options)
+            try:
+                cls.__instance.set_handler(File(), options)
+            except SettingsException as e:
+                cls.__instance = None
+                raise e
             return cls.__instance
 
         raise SettingsException('no such handler type "%s"' % type)
@@ -56,7 +60,7 @@ class Setting(object):
         trace = traceback.format_stack()
         caller = trace[len(trace) - 2]. \
             split(',')[0].replace('File', '').replace('"', '').strip()
-        if caller != __file__:
+        if caller not in __file__:  # for pyc file
             raise SettingsException(
                 'use Setting.instance() instead of Setting() for singleton')
 

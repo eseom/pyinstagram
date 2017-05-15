@@ -30,15 +30,15 @@ def generate_signature(data):
                     hashlib.sha256).hexdigest()
 
 
-def generate_uuid(type=True):
+def generate_uuid(nostrip=True):
     """
     generate random uuid
     """
     generated_uuid = str(uuid.uuid4())
-    if type:
+    if nostrip:
         return generated_uuid
     else:
-        return generated_uuid.replace('-', '')
+        return str(generated_uuid.replace('-', ''))
 
 
 def generate_device_id():
