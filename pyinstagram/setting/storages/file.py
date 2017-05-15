@@ -98,3 +98,6 @@ class File(object):
         if not os.path.exists(user_to_delete['user_directory']):
             return
         shutil.rmtree(user_to_delete['user_directory'])
+
+    def has_user_cookies(self):
+        return os.path.exists(self.cookies_file)

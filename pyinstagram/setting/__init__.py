@@ -75,7 +75,7 @@ class Setting(object):
             self.storage.__close_user()
 
         self.user_settings = {}
-        self.storage.__open_user(username)
+        self.storage.open_user(username)
 
         for key, val in self.storage.load_user_settings().items():
             if key in PERSISTENT_KEYS:
@@ -113,6 +113,12 @@ class Setting(object):
             pass
         self.user_settings[key] = value
         self.storage.save_user_settings(self.user_settings)
+
+    def is_maybe_logged_in(self):
+        self.__raise_if_no_active_user()
+        return (self.storage.has_user_cookies() and
+                not self.get('account_id') and
+                not self.get('token'))
 
     def __raise_if_no_active_user(self):
         if self.storage.username is None:
