@@ -39,7 +39,7 @@ class Client(object):
 
     def api(self, url, params={}, data={}, needs_auth=True, signed_post=True,
             response=None):
-        url = constants.get_api_url(1, url)
+        url = utils.get_api_url(1, url)
         headers = {
             'User-Agent': self.user_agent,
             'Connection': 'keep-alive',

@@ -9,7 +9,7 @@ import hmac
 import time
 import uuid
 
-from constants import IG_SIG_KEY, SIG_KEY_VERSION
+from constants import IG_SIG_KEY, SIG_KEY_VERSION, URI_TEMPLATE
 
 try:
     from urllib import quote
@@ -45,3 +45,10 @@ def generate_device_id():
     m = hashlib.md5()
     m.update(str(time.time()))
     return 'android-' + m.hexdigest()[:16]
+
+
+def get_api_url(version, path):
+    """
+    make api url by version and path
+    """
+    return URI_TEMPLATE % (version, path,)

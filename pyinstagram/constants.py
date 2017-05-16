@@ -5,13 +5,6 @@ constants and utils
 from __future__ import unicode_literals, print_function
 
 
-def get_api_url(version, path):
-    """
-    make api url by version and path
-    """
-    return 'https://i.instagram.com/api/v%d/%s' % (version, path,)
-
-
 EXPERIMENTS = ('ig_android_disk_cache_match_journal_size_to_cache_max_count,'
                'ig_android_ad_move_carousel_indicator_to_ufi_universe,'
                'ig_android_universe_video_production,'
@@ -297,6 +290,7 @@ LOGIN_EXPERIMENTS = ('ig_android_sms_consent_in_reg,'
                      'ig_android_gmail_oauth_in_access,'
                      'ig_android_reg_whiteout_redesign_v3,')
 
+URI_TEMPLATE = 'https://i.instagram.com/api/v%d/%s'
 IG_VERSION = '10.15.0'
 VERSION_CODE = '54119071'
 IG_SIG_KEY = 'b03e0daaf2ab17cda2a569cace938d639d1288a1197f9ecf97efd0a4ec0874d7'
