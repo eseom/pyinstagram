@@ -9,7 +9,7 @@ import random
 import requests
 
 import constants
-import signature
+import utils
 from .response.super import unmarshal
 
 if os.environ.get('DEBUG'):
@@ -59,7 +59,7 @@ class Client(object):
             method = 'post'
 
         if signed_post:
-            data = signature.generate_signature_for_post(json.dumps(data))
+            data = utils.generate_signature_for_post(json.dumps(data))
 
         rv = getattr(requests, method)(url, headers=headers, data=data)
 

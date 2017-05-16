@@ -1,5 +1,5 @@
 """
-constants
+constants and utils
 """
 
 from __future__ import unicode_literals, print_function
@@ -315,7 +315,11 @@ X_IG_Connection_Type = 'WIFI'
 X_IG_Capabilities = '3boBAA=='
 
 # Facebook Constants.
-FACEBOOK_OTA_FIELDS = 'update%7Bdownload_uri%2Cdownload_uri_delta_base%2Cversion_code_delta_base%2Cdownload_uri_delta%2Cfallback_to_full_update%2Cfile_size_delta%2Cversion_code%2Cpublished_date%2Cfile_size%2Cota_bundle_type%2Cresources_checksum%7D'
+FACEBOOK_OTA_FIELDS = (
+    'update%7Bdownload_uri%2Cdownload_uri_delta_base%2Cversion_code_delta_'
+    'base%2Cdownload_uri_delta%2Cfallback_to_full_update%2Cfile_size_delta%2C'
+    'version_code%2Cpublished_date%2Cfile_size%2Cota_bundle_type%2C'
+    'resources_checksum%7D')
 FACEBOOK_ORCA_PROTOCOL_VERSION = 20150314
 FACEBOOK_ORCA_APPLICATION_ID = '124024574287414'
 

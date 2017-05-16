@@ -1,6 +1,30 @@
+"""
+    Instagram's private API v2 python implementation
+
+    The original project is written by PHP.
+
+    https://github.com/mgp25/Instagram-API
+
+    TERMS OF USE:
+      This code is in no way affiliated with, authorized, maintained, sponsored
+      or endorsed by Instagram or any of its affiliates or subsidiaries. This is
+      an independent and unofficial API. Use at your own risk.
+      We do NOT support or tolerate anyone who wants to use this API to send spam
+      or commit other online crimes.
+      You will NOT use this API for marketing or other abusive purposes (spam,
+      botting, harassment, massive bulk messaging...).
+
+    PHP code
+        author mgp25: Founder, Reversing, Project Leader <https://github.com/mgp25>
+        author SteveJobzniak <https://github.com/SteveJobzniak>
+
+    Python code
+        author EunseokEom <me@eseom.org>
+"""
+
 from __future__ import unicode_literals, print_function
 
-from . import signature, constants, response
+from . import utils, constants, response
 from .client import Client
 from .device import Device
 from collections import OrderedDict
@@ -8,23 +32,52 @@ from collections import OrderedDict
 
 class Instagram(object):
     def __init__(self, setting):
+        # the account settings storage
         self.setting = setting
 
+        # the Android Device for the currently active user
         self.device = None
+
+        # currently active Instagram username
         self.username = None
+
+        # currently active Instagram password
         self.password = None
+
         self.uuid = None
+
+        # Google Play Advertising ID.
+        # The advertising ID is a unique ID for advertising, provided by Google
+        # Play services for use in Google Play apps. Used by Instagram.
         self.advertising_id = None
+
+        # android device id
         self.device_id = None
 
+        # session status
         self.is_logged_in = False
+
+        # numerical UserPK ID of the active user account
         self.account_id = None
+
+        # rank token
         self.rank_token = None
+
+        # CSRF token
         self.token = None
 
+        # api client instance
         self.client = Client(self)
 
     def set_user(self, username, password):
+        """
+        Set the active account for the class instance.
+        You can call this multiple times to switch between multiple accounts.
+
+        :param username: string instagram username
+        :param password: string instagram password
+        :return:
+        """
         if not username or not password:
             raise ValueError(
                 'you must provide a username and password to set_user()')
@@ -48,9 +101,9 @@ class Instagram(object):
         if (saved_device_string != ds or not self.setting.get('uuid') or
                 not self.setting.get('phone_id') or
                 not self.setting.get('device_id')):
-            self.setting.set('device_id', signature.generate_device_id())
-            self.setting.set('phone_id', signature.generate_uuid(True))
-            self.setting.set('uuid', signature.generate_uuid(True))
+            self.setting.set('device_id', utils.generate_device_id())
+            self.setting.set('phone_id', utils.generate_uuid(True))
+            self.setting.set('uuid', utils.generate_uuid(True))
 
             # Clear other params we also need to regenerate for the new device.
             self.setting.set('advertising_id', '')
@@ -71,7 +124,7 @@ class Instagram(object):
         # to the "clear other params" section above so that these are always
         # properly regenerated whenever the user's whole "device" changes.
         if not self.setting.get('advertising_id'):
-            self.setting.set('advertising_id', signature.generate_uuid(True))
+            self.setting.set('advertising_id', utils.generate_uuid(True))
 
         self.username = username
         self.password = password
@@ -90,17 +143,32 @@ class Instagram(object):
             self.rank_token = None
             self.token = None
 
+        # Configures Client for current user AND updates isLoggedIn state
+        # if it fails to load the expected cookies from the user's jar.
+        # Must be done last here, so that isLoggedIn is properly updated!
+        # NOTE: If we generated a new device we start a new cookie jar.
         self.client.update_from_current_settings(reset_cookie_jar)
 
     def sync_feature(self, pre_login=False):
+        """
+        Perform an Instagram "feature synchronization" call.
+        :param pre_login:
+        :return:
+        """
         if pre_login:
-            o = OrderedDict(id=signature.generate_uuid(True),
+            o = OrderedDict(id=utils.generate_uuid(True),
                             experiments=constants.LOGIN_EXPERIMENTS)
             return self.client.api(
                 'qe/sync/', needs_auth=False, data=o,
                 response=response.Sync)
 
     def get_signup_challenge(self):
+        """
+        Signup challenge is used to get _csrftoken in order to make a
+        successful login or registration request.
+
+        :return:
+        """
         return self.client.api(
             'si/fetch_headers/',
             params=OrderedDict(challenge_type='signup',

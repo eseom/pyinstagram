@@ -1,19 +1,20 @@
 """
-test signature
+test utils
 """
 
 from __future__ import unicode_literals, print_function
 
 import unittest
 
-from pyinstagram.signature import generate_signature_for_post, generate_uuid, \
+from pyinstagram.utils import generate_signature_for_post, generate_uuid, \
     generate_device_id
 
 
 class Tester(unittest.TestCase):
     """
-    signature test case
+    utils test case
     """
+
     def test_generate_signature(self):
         """
         test generate_signature function
@@ -25,7 +26,8 @@ class Tester(unittest.TestCase):
                 'ig_sig_key_version=4&signed_body=3dc83e3b2e14375a8cb91e9e0'
                 'b5b4373180cef893edf94a74379184d20bfcdf0.customkey']]
         for (sign_key, generated_sign_key) in src:
-            self.assertEqual(generate_signature_for_post(sign_key), generated_sign_key)
+            self.assertEqual(generate_signature_for_post(sign_key),
+                             generated_sign_key)
 
     def test_generate_uuid(self):
         """
