@@ -11,3 +11,16 @@ $ python
 >> instagram.login()
 >> ...
 ```
+
+# development
+```
+# fork first
+git clone https://github.com/<your id>/pyinstagram pyinstgram
+cd pyinstagram
+virtualenv ve
+. ve/bin/activate
+pip install -r requiremnet.txt
+pip install -r requiremnet-dev.txt
+pip install -e .
+py.test --cov=pyinstagram tests/
+```
