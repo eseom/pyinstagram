@@ -3,6 +3,7 @@ from __future__ import unicode_literals, print_function
 import unittest
 
 from pyinstagram.instagram import Instagram
+from pyinstagram.response import Sync, Challenge
 from pyinstagram.setting import Setting
 
 
@@ -27,8 +28,11 @@ class InstagramTester(unittest.TestCase):
 
     def test_sync_feature_pre_login(self):
         self.instagram.set_user('testuser', 'testpassword')
-        self.instagram.sync_feature(True)
+        response = self.instagram.sync_feature(True)
+        self.assertIsInstance(response, Sync)
 
     def test_sync_get_signup_challenge(self):
         self.instagram.set_user('testuser', 'testpassword')
-        self.instagram.get_signup_challenge()
+        response = self.instagram.get_signup_challenge()
+        self.assertIsInstance(response, Challenge)
+

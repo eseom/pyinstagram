@@ -45,4 +45,3 @@ def generate_device_id():
     m = hashlib.md5()
     m.update(str(time.time()))
     return 'android-' + m.hexdigest()[:16]
-

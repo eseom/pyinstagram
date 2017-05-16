@@ -10,6 +10,7 @@ import requests
 
 import constants
 import signature
+from .response.super import unmarshal
 
 if os.environ.get('DEBUG'):
     # Debug logging
@@ -36,7 +37,8 @@ class Client(object):
     def load_cookie_jar(self, reset_cookie_jar=False):
         pass
 
-    def api(self, url, params={}, data={}, needs_auth=True, signed_post=True, response=None):
+    def api(self, url, params={}, data={}, needs_auth=True, signed_post=True,
+            response=None):
         url = constants.get_api_url(1, url)
         headers = {
             'User-Agent': self.user_agent,
@@ -64,4 +66,4 @@ class Client(object):
         if rv.status_code != 200:
             raise Exception()
 
-        return rv
+        return unmarshal(json.loads(rv.text), response)
