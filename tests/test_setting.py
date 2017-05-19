@@ -7,7 +7,7 @@ from pyinstagram.exceptions import SettingsException
 from pyinstagram.setting import Setting
 
 
-class SettingTester(unittest.TestCase):
+class SettingBase(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         Setting.create_instance('file', {
@@ -18,9 +18,14 @@ class SettingTester(unittest.TestCase):
     def tearDownClass(cls):
         setting = Setting.instance()
         setting.delete_user('test_username')
-        shutil.rmtree('./sessions')
+        try:
+            shutil.rmtree('./sessions')
+        except:  # already deleted in delete_user
+            pass
         Setting.destroy_instance()
 
+
+class SettingTester(SettingBase):
     def test_illegal_way_to_make_instance(self):
         with self.assertRaises(SettingsException):
             Setting()
@@ -51,7 +56,12 @@ class SettingTester(unittest.TestCase):
         with self.assertRaises(SettingsException):
             settings.set('invalid_key', 'invalid_value')
 
+
+class DeleteSettingTester(unittest.TestCase):
     def test_delete_user(self):
+        Setting.create_instance('file', {
+            'base_directory': './sessions',
+        })
         settings = Setting.instance()
         settings.delete_user('test_username')
 
@@ -60,6 +70,7 @@ class NullSettingTester(unittest.TestCase):
     """
     exception when you call instance() before calling create_instance()
     """
+
     def test_setting_with_no_handler(self):
         with self.assertRaises(SettingsException):
             Setting.instance()
@@ -69,6 +80,7 @@ class InvalidSettingTester(unittest.TestCase):
     """
     exception when you call create_instance() with invalid options
     """
+
     def test_setting_with_invalid_options(self):
         with self.assertRaises(SettingsException):
             Setting.create_instance('file', {})

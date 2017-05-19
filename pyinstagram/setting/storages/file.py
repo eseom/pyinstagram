@@ -15,13 +15,14 @@ STORAGE_VERSION = 2
 def write(settings_file, encoded_data):
     try:
         tmp_file = '%s_tmp' % settings_file
-        with open(tmp_file, 'w') as fp:
+        with open(tmp_file, str('w')) as fp:
             fp.write(encoded_data)
             fp.flush()
             os.fsync(fp.fileno())
         os.rename(tmp_file, settings_file)
         return True
     except Exception as e:
+        print('write', e)
         return False
 
 
@@ -59,7 +60,7 @@ class File(object):
         self.username = username
         self.settings_file = os.path.join(user_paths['user_directory'],
                                           user_paths['settings_file'])
-        self.cookies_file = os.path.join(user_paths['cookies_file'],
+        self.cookies_file = os.path.join(user_paths['user_directory'],
                                          user_paths['cookies_file'])
 
     def close_user(self):
@@ -101,3 +102,14 @@ class File(object):
 
     def has_user_cookies(self):
         return os.path.exists(self.cookies_file)
+
+    def save_user_cookies(self, raw_data):
+        # requests library manages the file type cookie jar directly
+        pass
+
+    def load_user_cookies(self):
+        return self.cookies_file
+
+    def reset_user_cookies(self):
+        if os.path.exists(self.cookies_file):
+            os.remove(self.cookies_file)

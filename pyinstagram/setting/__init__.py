@@ -1,6 +1,7 @@
 from __future__ import unicode_literals, print_function
 
 import traceback
+import json
 
 from .storages.file import File
 from ..exceptions import SettingsException
@@ -87,6 +88,7 @@ class Setting(object):
 
     def delete_user(self, username):
         self.storage.delete_user(username)
+        Setting.destroy_instance()
 
     def load_user_settings(self):
         self.__raise_if_no_active_user()
@@ -113,7 +115,7 @@ class Setting(object):
         try:
             if self.user_settings[key] == value:
                 return
-        except:
+        except Exception as e:
             pass
         self.user_settings[key] = value
         self.storage.save_user_settings(self.user_settings)
@@ -123,6 +125,20 @@ class Setting(object):
         return (self.storage.has_user_cookies() and
                 not self.get('account_id') and
                 not self.get('token'))
+
+    def set_cookies(self, raw_data):
+        self.__raise_if_no_active_user()
+        if not raw_data:
+            raise SettingsException('cookies data must not be None')
+        self.storage.save_user_cookies(raw_data)
+
+    def get_cookies(self):
+        self.__raise_if_no_active_user()
+        return self.storage.load_user_cookies()
+
+    def reset_cookies(self):
+        self.__raise_if_no_active_user()
+        return self.storage.reset_user_cookies()
 
     def __raise_if_no_active_user(self):
         if self.storage.username is None:

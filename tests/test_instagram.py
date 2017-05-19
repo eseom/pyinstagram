@@ -1,5 +1,6 @@
 from __future__ import unicode_literals, print_function
 
+import os
 import unittest
 
 from pyinstagram.instagram import Instagram
@@ -16,9 +17,11 @@ class InstagramTester(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls):
-        Setting.destroy_instance()
+        Setting.instance().delete_user('testuser')
+        os.removedirs('./sessions')
 
     def setUp(self):
+        # a new Instagram instance for every test methods
         self.instagram = Instagram(Setting.instance())
 
     def test_set_user(self):
@@ -31,8 +34,6 @@ class InstagramTester(unittest.TestCase):
         response = self.instagram.sync_feature(True)
         self.assertIsInstance(response, Sync)
 
-    def test_sync_get_signup_challenge(self):
         self.instagram.set_user('testuser', 'testpassword')
         response = self.instagram.get_signup_challenge()
         self.assertIsInstance(response, Challenge)
-

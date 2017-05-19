@@ -160,7 +160,7 @@ class Instagram(object):
                             experiments=constants.LOGIN_EXPERIMENTS)
             return self.client.api(
                 'qe/sync/', needs_auth=False, data=o,
-                response=response.Sync)
+                responseClass=response.Sync)
 
     def get_signup_challenge(self):
         """
@@ -173,7 +173,7 @@ class Instagram(object):
             'si/fetch_headers/',
             params=OrderedDict(challenge_type='signup',
                                guid=self.uuid.replace('-', '')),
-            response=response.Challenge)
+            responseClass=response.Challenge)
 
     def __str__(self):
         return ('<Instagram: settings=%s, device=%s, username=%s, '
