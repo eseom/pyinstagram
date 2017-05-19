@@ -24,10 +24,12 @@
 
 from __future__ import unicode_literals, print_function
 
+import logging
+from collections import OrderedDict
+
 from . import utils, constants, response
 from .client import Client
 from .device import Device
-from collections import OrderedDict
 
 
 class Instagram(object):
@@ -68,6 +70,16 @@ class Instagram(object):
 
         # api client instance
         self.client = Client(self)
+
+        # logger
+        self.logger = logging.getLogger('pyinstagram')
+        self.logger.setLevel(logging.DEBUG)
+        if not self.logger.handlers:
+            streamHandler = logging.StreamHandler()
+            self.logger.addHandler(streamHandler)
+
+    def set_log_level(self, level):
+        self.logger.setLevel(level)
 
     def set_user(self, username, password):
         """
@@ -160,7 +172,7 @@ class Instagram(object):
                             experiments=constants.LOGIN_EXPERIMENTS)
             return self.client.api(
                 'qe/sync/', needs_auth=False, data=o,
-                responseClass=response.Sync)
+                response_class=response.Sync)
 
     def get_signup_challenge(self):
         """
@@ -173,7 +185,7 @@ class Instagram(object):
             'si/fetch_headers/',
             params=OrderedDict(challenge_type='signup',
                                guid=self.uuid.replace('-', '')),
-            responseClass=response.Challenge)
+            response_class=response.Challenge)
 
     def __str__(self):
         return ('<Instagram: settings=%s, device=%s, username=%s, '

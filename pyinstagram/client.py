@@ -3,6 +3,7 @@ from __future__ import unicode_literals, print_function
 import cookielib
 import httplib
 import json
+import urllib
 import logging
 import os
 import random
@@ -49,8 +50,8 @@ class Client(object):
             pass
         self.session.cookies = self.cookie_jar
 
-    def api(self, url, params={}, data={}, needs_auth=True, signed_post=True,
-            responseClass=None):
+    def api(self, url, params=None, data=None, needs_auth=True,
+            signed_post=True, response_class=None):
         url = utils.get_api_url(1, url)
         headers = {
             'User-Agent': self.user_agent,
@@ -67,11 +68,17 @@ class Client(object):
         }
 
         method = 'get'
+        if params:
+            url = '%s?%s' % (url, urllib.urlencode(params),)
+
         if data:
             method = 'post'
 
-        if signed_post:
-            data = utils.generate_signature_for_post(json.dumps(data))
+            if signed_post:
+                data = utils.generate_signature_for_post(json.dumps(data))
+
+        self.parent.logger.debug('[%s] %s' % (method.upper(), url,))
+        self.parent.logger.debug('sending... %s' % str(data))
 
         response = getattr(self.session, method)(url, headers=headers,
                                                  data=data)
@@ -79,7 +86,7 @@ class Client(object):
         if response.status_code != 200:
             raise Exception()
 
-        response_object = unmarshal(json.loads(response.text), responseClass)
+        response_object = unmarshal(json.loads(response.text), response_class)
         response_object.full_response = response
 
         # save cookie
