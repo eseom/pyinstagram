@@ -12,7 +12,7 @@ import requests
 
 import constants
 import utils
-from .response.super import unmarshal
+from .response.super import unmarshal, Response
 
 if os.environ.get('DEBUG'):
     # Debug logging
@@ -84,9 +84,16 @@ class Client(object):
                                                  data=data)
 
         if response.status_code != 200:
-            raise Exception()
+            raise Exception(response.text)
 
-        response_object = unmarshal(json.loads(response.text), response_class)
+        loaded_data = json.loads(response.text)
+        if response_class:
+            response_object = unmarshal(loaded_data, response_class)
+        else:
+            response_object = Response()
+            response_object.data = loaded_data
+            self.parent.logger.debug(
+                'receiving... %s' % json.dumps(loaded_data, indent=2))
         response_object.full_response = response
 
         # save cookie

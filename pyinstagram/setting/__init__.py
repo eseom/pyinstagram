@@ -7,14 +7,32 @@ from .storages.file import File
 from ..exceptions import SettingsException
 
 PERSISTENT_KEYS = [
-    'account_id',  # The numerical UserPK ID of the account.
-    'devicestring',  # Which Android device they're identifying as.
-    'device_id',  # Hardware identifier.
-    'phone_id',  # Hardware identifier.
-    'uuid',  # Universally unique identifier.
-    'token',  # CSRF token for the logged in session.
-    'advertising_id',  # Google Play advertising ID.
-    'last_login',  # Tracks time elapsed since our last login state refresh.
+    # The numerical UserPK ID of the account.
+    'account_id',
+    # Which Android device they're identifying as.
+    'devicestring',
+    # Hardware identifier.
+    'device_id',
+    # Hardware identifier.
+    'phone_id',
+    # Universally unique identifier.
+    'uuid',
+    # CSRF token for the logged in session.
+    'token',
+    # Google Play advertising ID.
+    'advertising_id',
+    # Interesting experiment variables for this account.
+    'experiments',
+    # Tracks time elapsed since our last login state refresh.
+    'last_login',
+    # Tracks time elapsed since our last experiments refresh.
+    'last_experiments',
+]
+
+EXPERIMENT_KEYS = [
+    'ig_android_2fac',
+    'ig_android_mqtt_skywalker',
+    'ig_android_skywalker_live_event_start_end',
 ]
 
 
@@ -122,9 +140,8 @@ class Setting(object):
 
     def is_maybe_logged_in(self):
         self.__raise_if_no_active_user()
-        return (self.storage.has_user_cookies() and
-                not self.get('account_id') and
-                not self.get('token'))
+        return (self.storage.has_user_cookies() and self.get('account_id') and
+                self.get('token'))
 
     def set_cookies(self, raw_data):
         self.__raise_if_no_active_user()
@@ -139,6 +156,26 @@ class Setting(object):
     def reset_cookies(self):
         self.__raise_if_no_active_user()
         return self.storage.reset_user_cookies()
+
+    def set_experiments(self, experiments):
+        """
+        process and save experiments.
+        :param experiments: 
+        """
+        filtered = []
+        keys = experiments.keys()
+        for key in EXPERIMENT_KEYS:
+            if key not in keys:
+                continue
+            filtered[key] = experiments[key]
+        self.set('experiments', json.dumps(filtered))
+        return filtered
+
+    def get_experiments(self):
+        experiments =self.get('experiments')
+        if not experiments:
+            return []
+        return json.loads(experiments)
 
     def __raise_if_no_active_user(self):
         if self.storage.username is None:

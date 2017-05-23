@@ -92,3 +92,5 @@ ve/
 
 # Rope project settings
 .ropeproject
+settings.py
+sessions/

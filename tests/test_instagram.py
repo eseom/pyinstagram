@@ -6,6 +6,7 @@ import unittest
 from pyinstagram.instagram import Instagram
 from pyinstagram.response import Sync, Challenge
 from pyinstagram.setting import Setting
+from pyinstagram.response.super import Response
 
 
 class InstagramTester(unittest.TestCase):
@@ -29,11 +30,11 @@ class InstagramTester(unittest.TestCase):
         self.instagram.set_user('testuser', 'testpassword')
         self.assertEquals(self.instagram.username, 'testuser')
 
-    def test_sync_feature_pre_login(self):
+    def test_sync_features_pre_login(self):
         self.instagram.set_user('testuser', 'testpassword')
-        response = self.instagram.sync_feature(True)
-        self.assertIsInstance(response, Sync)
+        response = self.instagram.sync_features(True)
+        self.assertIsInstance(response, Response)
 
         self.instagram.set_user('testuser', 'testpassword')
         response = self.instagram.get_signup_challenge()
-        self.assertIsInstance(response, Challenge)
+        self.assertIsInstance(response, Response)
