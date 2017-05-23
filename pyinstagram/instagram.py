@@ -29,7 +29,7 @@ import logging
 import time
 from collections import OrderedDict
 
-from . import utils, constants, response
+from . import utils, constants
 from .client import Client
 from .device import Device
 
@@ -82,8 +82,8 @@ class Instagram(object):
         self.logger = logging.getLogger('pyinstagram')
         self.logger.setLevel(logging.DEBUG)
         if not self.logger.handlers:
-            streamHandler = logging.StreamHandler()
-            self.logger.addHandler(streamHandler)
+            stream_handler = logging.StreamHandler()
+            self.logger.addHandler(stream_handler)
 
     def set_log_level(self, level):
         self.logger.setLevel(level)
@@ -172,10 +172,14 @@ class Instagram(object):
     def login(self, force_login=False, app_refresh_interval=1800):
         """
         Login to Instagram or automatically resume and refresh previous session.
-        
-        WARNING: You MUST run this function EVERY time your script runs! It handles automatic session
-        resume and relogin and app session state refresh and other absolutely *vital* things that are
+
+        WARNING: You MUST run this function EVERY time your script runs!
+        It handles automatic session resume and relogin and app session state
+        refresh and other absolutely *vital* things that are
         important if you don't want to be banned from Instagram!
+
+        :param force_login:
+        :param app_refresh_interval:
         """
         if not self.is_logged_in or force_login:
             self.sync_features(True)
@@ -212,27 +216,27 @@ class Instagram(object):
     def _send_login_flow(self, just_logged_in, app_refresh_interval=1800):
         """
         SUPER IMPORTANT:
-        
+
         STOP trying to ask us to remove this code section!
-        
+
         EVERY time the user presses their device's home button to leave the
         app and then comes back to the app, Instagram does ALL of these things
         to refresh its internal app state. We MUST emulate that perfectly,
         otherwise Instagram will silently detect you as a "fake" client
         after a while!
-        
+
         You can configure the login's $appRefreshInterval in the function
         parameter above, but you should keep it VERY frequent (definitely
         NEVER longer than 6 hours), so that Instagram sees you as a real
         client that keeps quitting and opening their app like a REAL user!
-        
+
         Otherwise they WILL detect you as a bot and silently BLOCK features
         or even ban you.
-        
+
         You have been warned.
 
-        :param just_logged_in: 
-        :param app_refresh_interval: 
+        :param just_logged_in:
+        :param app_refresh_interval:
         """
         if app_refresh_interval > 21600:
             raise ValueError('Instagram\'s app state refresh interval is NOT '
@@ -254,7 +258,8 @@ class Instagram(object):
             self.get_explorer()
         else:
             # Act like a real logged in app client refreshing its news timeline.
-            # This also lets us detect if we're still logged in with a valid session.
+            # This also lets us detect if we're still logged in with a
+            # valid session.
             try:
                 self.get_timeline_feed()
                 # \InstagramAPI\Exception\LoginRequiredException $e
@@ -263,7 +268,8 @@ class Instagram(object):
                 # so handle that by running a forced relogin in that case!
                 return self.login(True, app_refresh_interval)
             last_login_time = float(self.setting.get('last_login'))
-            if last_login_time == None or time.time() - last_login_time > app_refresh_interval:
+            if last_login_time == None or \
+                        time.time() - last_login_time > app_refresh_interval:
                 self.setting.set('last_login', str(time.time()))
 
                 self.get_autocomplete_user_list()
@@ -276,8 +282,8 @@ class Instagram(object):
 
             last_experiments_time = self.setting.get('last_experiments')
             if last_experiments_time == None or \
-                            (time.time() - float(
-                                last_experiments_time)) > EXPERIMENTS_REFRESH:
+                    (time.time() - float(
+                        last_experiments_time)) > EXPERIMENTS_REFRESH:
                 self.setting.set('last_experiments', time.time())
                 self.sync_features()
 
@@ -315,7 +321,7 @@ class Instagram(object):
             try:
                 experiments[exp['name']]
             except:
-                experiments[exp['name']] = []
+                experiments[exp['name']] = {}
             if not exp['params']:
                 continue
             for p in exp['params']:
@@ -358,7 +364,7 @@ class Instagram(object):
     def get_timeline_feed(self, max_id=None):
         """
         get your own timeline feed
-        
+
         :param max_id: null|string next "maximum ID", used for pagination.
         """
         params = {
@@ -380,7 +386,7 @@ class Instagram(object):
     def get_v2_inbox(self, cursor_id=None):
         """
         get direct inbox messages for your account.
-        :param cursor_id: 
+        :param cursor_id:
         """
         params = {}
         if cursor_id:

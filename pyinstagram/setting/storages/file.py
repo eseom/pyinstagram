@@ -1,10 +1,9 @@
 from __future__ import unicode_literals, print_function
 
 import json
-import os
-
 import shutil
 
+import os
 from ...exceptions import SettingsException
 
 SETTINGS_FILE_NAME = '%s-settings.dat'

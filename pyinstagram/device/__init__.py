@@ -49,8 +49,8 @@ class Device(object):
         self.app_version = app_version
         self.user_locale = user_locale
         if auto_fallback and \
-                (device_string == '' or
-                     not good_devices.is_good_device(device_string)):
+            (device_string == '' or
+                 not good_devices.is_good_device(device_string)):
             device_string = good_devices.get_random_good_device()
 
         if device_string == '':

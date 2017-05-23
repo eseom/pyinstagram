@@ -3,14 +3,13 @@ from __future__ import unicode_literals, print_function
 import cookielib
 import httplib
 import json
-import urllib
 import logging
-import os
 import random
-
-import requests
+import urllib
 
 import constants
+import os
+import requests
 import utils
 from .response.super import unmarshal, Response
 

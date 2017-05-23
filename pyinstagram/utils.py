@@ -9,7 +9,7 @@ import hmac
 import time
 import uuid
 
-from constants import IG_SIG_KEY, SIG_KEY_VERSION, URI_TEMPLATE
+from .constants import IG_SIG_KEY, SIG_KEY_VERSION, URI_TEMPLATE
 
 try:
     from urllib import quote
@@ -30,12 +30,15 @@ def generate_signature(data):
                     hashlib.sha256).hexdigest()
 
 
-def generate_uuid(nostrip=True):
+def generate_uuid(no_strip=True):
     """
     generate random uuid
+
+    :param no_strip:
+    :return:
     """
     generated_uuid = str(uuid.uuid4())
-    if nostrip:
+    if no_strip:
         return generated_uuid
     else:
         return str(generated_uuid.replace('-', ''))
@@ -50,5 +53,9 @@ def generate_device_id():
 def get_api_url(version, path):
     """
     make api url by version and path
+
+    :param version:
+    :param path:
+    :return:
     """
     return URI_TEMPLATE % (version, path,)

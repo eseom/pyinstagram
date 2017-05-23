@@ -1,7 +1,7 @@
 from __future__ import unicode_literals, print_function
 
-import traceback
 import json
+import traceback
 
 from .storages.file import File
 from ..exceptions import SettingsException
@@ -160,9 +160,9 @@ class Setting(object):
     def set_experiments(self, experiments):
         """
         process and save experiments.
-        :param experiments: 
+        :param experiments:
         """
-        filtered = []
+        filtered = {}
         keys = experiments.keys()
         for key in EXPERIMENT_KEYS:
             if key not in keys:
@@ -172,7 +172,7 @@ class Setting(object):
         return filtered
 
     def get_experiments(self):
-        experiments =self.get('experiments')
+        experiments = self.get('experiments')
         if not experiments:
             return []
         return json.loads(experiments)

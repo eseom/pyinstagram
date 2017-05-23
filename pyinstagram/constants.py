@@ -4,7 +4,6 @@ constants and utils
 
 from __future__ import unicode_literals, print_function
 
-
 EXPERIMENTS = ('ig_android_disk_cache_match_journal_size_to_cache_max_count,'
                'ig_android_ad_move_carousel_indicator_to_ufi_universe,'
                'ig_android_universe_video_production,'
