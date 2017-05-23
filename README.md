@@ -1,6 +1,7 @@
 # pyinstagram
 
 python port of https://github.com/mgp25/Instagram-API
+(pyinstagram is a developing alpha... welcome any tests, suggestions and feedbacks.)
 
 # usage
 ```
